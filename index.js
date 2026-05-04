@@ -4,6 +4,7 @@ import connectDB from "./src/common/configs/connectDB.js";
 import jsonValidator from "./src/common/middlewares/jsonValidator.js";
 import notFoundHandler from "./src/common/middlewares/notfoundHandler.js";
 import errorHandler from "./src/common/middlewares/errorHandler.js";
+import { configenv } from "./src/common/configs/configenv.js";
 
 const app = express();
 const port = 3000;
@@ -23,6 +24,6 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(
-    `Ứng dụng của bạn đang được khởi động trên http://localhost:${port}`
+    `Ứng dụng của bạn đang được khởi động trên cổng ${configenv.PORT}`
   );
 });

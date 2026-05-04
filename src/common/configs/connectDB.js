@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import { configenv } from "./configenv.js";
 
 export default function connectDB() {
   mongoose
-    .connect("mongodb://127.0.0.1:27017/fs25091-nodejs")
+    .connect(configenv.MONGODB_URI)
     .then(() => {
       console.log("Connect database successfully!");
     })

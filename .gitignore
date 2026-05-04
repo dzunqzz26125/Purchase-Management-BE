@@ -4,6 +4,8 @@
 # VS Code
 .vscode/
 
+test.js
+
 # Python
 __pycache__/
 *.py[cod]

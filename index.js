@@ -1,11 +1,11 @@
 import express from "express";
-import mongoose from "mongoose";
 import router from "./src/routes/index.js";
+import connectDB from "./src/common/configs/connectDB.js";
 
 const app = express();
 const port = 3000;
 
-mongoose.connect("mongodb://127.0.0.1:27017/fs25091-nodejs");
+connectDB();
 
 app.use(express.json());
 

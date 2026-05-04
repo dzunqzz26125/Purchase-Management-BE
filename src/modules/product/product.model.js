@@ -11,6 +11,10 @@ const productSchema = new Schema(
       required: true,
     },
     description: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

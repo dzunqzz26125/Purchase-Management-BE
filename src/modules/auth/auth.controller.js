@@ -1,25 +1,14 @@
-/**
- * basic: register, login, forgot password, reset password, verify email, resend verification email,
- *
- * advance: manage user profile, manage user roles and permissions, logout, refresh token, social login, account deletion, and more...
- */
-
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import handleAsync from "../../common/utils/handleAsync.js";
 import { User } from "../user/user.model.js";
 import { configenv } from "../../common/configs/configenv.js";
+import createError from "../../common/utils/createError.js";
 
-export const registerAuth = handleAsync(async (req, res) => {
-  /**
-   * 1. Kiểm tra dữ liệu đầu vào (validation) - done
-   * 2. Kiểm tra xem email đã tồn tại chưa (unique)
-   * 3. Hash password trước khi lưu vào database
-   * 4. Lưu thông tin người dùng vào database
-   * 5. Trả về response thành công hoặc lỗi
-   */
-
+// REGISTER
+export const registerAuth = handleAsync(async (req, res, next) => {
   const { email, password, name } = req.body;
+
+  // 1. Check email tồn tại
   const existUser = await User.findOne({ email });
   if (existUser) {
     return res.status(400).json({
@@ -29,10 +18,15 @@ export const registerAuth = handleAsync(async (req, res) => {
     });
   }
 
-  const hashPassword = await bcrypt.hash(password, 10);
+  // 2. Tạo user (password sẽ được hash ở model)
+  const newUser = await User.create({
+    email,
+    password,
+    name,
+  });
 
-  const newUser = await User.create({ email, password: hashPassword, name });
-  newUser.password = undefined; // Ẩn trường password khi trả về response
+  // 3. Ẩn password
+  newUser.password = undefined;
 
   res.status(201).json({
     success: true,
@@ -42,10 +36,21 @@ export const registerAuth = handleAsync(async (req, res) => {
   });
 });
 
-export const loginAuth = handleAsync(async (req, res) => {
+// LOGIN
+export const loginAuth = handleAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  const existUser = await User.findOne({ email });
 
+  if (!configenv.JWT_SECRET || !configenv.JWT_REFRESH_SECRET) {
+    return next(
+      createError(
+        500,
+        "Thiếu JWT_SECRET hoặc JWT_REFRESH_SECRET trong file .env"
+      )
+    );
+  }
+
+  // 1. Tìm user
+  const existUser = await User.findOne({ email });
   if (!existUser) {
     return res.status(400).json({
       success: false,
@@ -54,9 +59,9 @@ export const loginAuth = handleAsync(async (req, res) => {
     });
   }
 
-  const isPasswordValid = await bcrypt.compare(password, existUser.password);
-
-  if (!isPasswordValid) {
+  // 2. So sánh password (dùng method trong model)
+  const isMatch = await existUser.comparePassword(password);
+  if (!isMatch) {
     return res.status(400).json({
       success: false,
       statusCode: 400,
@@ -64,23 +69,21 @@ export const loginAuth = handleAsync(async (req, res) => {
     });
   }
 
+  // 3. Tạo token
   const accessToken = jwt.sign(
-    { userId: existUser._id },
+    { userId: existUser._id, role: existUser.role },
     configenv.JWT_SECRET,
-    {
-      expiresIn: "1h",
-    }
+    { expiresIn: "1h" },
   );
 
   const refreshToken = jwt.sign(
     { userId: existUser._id },
     configenv.JWT_REFRESH_SECRET,
-    {
-      expiresIn: "15d",
-    }
+    { expiresIn: "15d" },
   );
 
-  existUser.password = undefined; // Ẩn trường password khi trả về response
+  // 4. Ẩn password
+  existUser.password = undefined;
 
   res.status(200).json({
     success: true,
@@ -91,5 +94,3 @@ export const loginAuth = handleAsync(async (req, res) => {
     refreshToken,
   });
 });
-
-// refreshToken...

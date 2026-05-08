@@ -16,7 +16,7 @@ app.use(express.json());
 app.use("/api", router);
 
 // Middleware xử lý JSON không hợp lệ
-app.use(jsonValidator);
+// app.use(jsonValidator);
 // Middleware xử lý route không tồn tại
 app.use(notFoundHandler);
 // Middleware xử lý lỗi chung
@@ -24,6 +24,6 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(
-    `Ứng dụng của bạn đang được khởi động trên cổng ${configenv.PORT}`
+    `Ứng dụng của bạn đang được khởi động trên cổng ${configenv.PORT}`,
   );
 });

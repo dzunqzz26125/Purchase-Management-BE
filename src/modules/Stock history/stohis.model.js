@@ -35,7 +35,7 @@ const StockHistorySchema = new Schema(
       min: 0,
     },
 
-    // giúp audit nguồn gốc của thay đổi tồn kho
+    // “Biến động tồn kho này đến từ đâu?” - từ đơn nhập hàng, đơn bán hàng hay điều chỉnh thủ công
     referenceType: {
       type: String,
       enum: ["purchase", "sale", "manual"],

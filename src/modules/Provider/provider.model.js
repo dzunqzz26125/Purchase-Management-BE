@@ -35,7 +35,7 @@ const ProviderSchema = new Schema(
       maxlength: 200,
     },
 
-    // công nợ nhà cung cấp
+    // số tiền mình còn nợ nhà cung cấp
     debt: {
       type: Number,
       default: 0,

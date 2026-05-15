@@ -85,12 +85,26 @@ export const loginAuth = handleAsync(async (req, res, next) => {
   // 4. Ẩn password
   existUser.password = undefined;
 
-  res.status(200).json({
+  const isProd = configenv.NODE_ENV === "production";
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "strict" : "lax",
+    maxAge: 24 * 60 * 60 * 1000,
+  })
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "strict" : "lax",
+    maxAge: 15 * 24 * 60 * 60 * 1000,
+  })
+
+  res.status(201).json({
     success: true,
-    statusCode: 200,
+    statusCode: 201,
     message: "Đăng nhập thành công",
-    data: existUser,
-    accessToken,
-    refreshToken,
+    data: {accessToken, existUser},
   });
 });

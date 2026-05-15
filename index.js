@@ -29,4 +29,5 @@ app.listen(configenv.PORT, () => {
   console.log(
     `Ứng dụng của bạn đang được khởi động trên cổng ${configenv.PORT}`,
   );
+  console.log("MONGO URI:", process.env.MONGODB_URI);
 });

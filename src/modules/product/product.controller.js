@@ -11,10 +11,12 @@ export const createProduct = handleAsync(async (req, res) => {
 
 export const getProducts = handleAsync(async (req, res) => {
   const products = await Product.find();
+
+  console.log("Products:", products);
   res
     .status(200)
     .json(
-      createResponse(true, 200, "Products retrieved successfully", products)
+      createResponse(true, 200, "Products retrieved successfully", products),
     );
 });
 
@@ -50,12 +52,12 @@ export const softDeleteProduct = handleAsync(async (req, res) => {
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     { deletedAt: new Date() },
-    { new: true }
+    { new: true },
   );
   res
     .status(200)
     .json(
-      createResponse(true, 200, "Product soft deleted successfully", product)
+      createResponse(true, 200, "Product soft deleted successfully", product),
     );
 });
 
@@ -63,7 +65,7 @@ export const restoreProduct = handleAsync(async (req, res) => {
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     { deletedAt: null },
-    { new: true }
+    { new: true },
   );
   res
     .status(200)

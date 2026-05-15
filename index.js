@@ -22,15 +22,7 @@ app.use(express.json());
 
 app.use("/api", router);
 
-// Middleware xử lý JSON không hợp lệ
-// app.use(jsonValidator);
-// Middleware xử lý route không tồn tại
 app.use(notFoundHandler);
-// Middleware xử lý lỗi chung
 app.use(errorHandler);
 
-app.listen(configenv.PORT, () => {
-  console.log(
-    `Ứng dụng của bạn đang được khởi động trên cổng ${configenv.PORT}`,
-  );
-});
+app.listen(configenv.MONGODB_URI, () => {});

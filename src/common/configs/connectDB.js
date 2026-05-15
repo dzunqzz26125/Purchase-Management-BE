@@ -11,7 +11,7 @@ const connectDB = async () => {
     console.log("✅ MongoDB connected");
   } catch (error) {
     console.error("❌ MongoDB error:", error.message);
-    throw error; // 🔥 QUAN TRỌNG
+    throw error;
   }
 };
 

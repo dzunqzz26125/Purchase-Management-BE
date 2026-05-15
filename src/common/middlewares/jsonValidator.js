@@ -1,12 +1,12 @@
-const jsonValidator = (req, res, next) => {
-  if (!req.is("application/json")) {
+const jsonValidator = (err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
     return res.status(400).json({
       success: false,
       statusCode: 400,
-      message: "Invalid JSON format",
+      message: "JSON không hợp lệ",
     });
   }
-  next();
+  next(err);
 };
 
 export default jsonValidator;

@@ -13,7 +13,11 @@ connectDB();
 
 app.use(
   cors({
-    origin: `${configenv.FE_PORT}`,
+    origin: [
+      configenv.FE_PORT,
+      configenv.FE_PORT.replace(/\/$/, ""),
+      "http://localhost:5173",
+    ],
     credentials: true,
   }),
 );
@@ -25,4 +29,8 @@ app.use("/api", router);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(configenv.MONGODB_URI, () => {});
+app.listen(configenv.PORT, () => {
+  console.log(
+    `Ứng dụng của bạn đang được khởi động trên cổng ${configenv.PORT}`,
+  );
+});

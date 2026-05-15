@@ -12,8 +12,8 @@ const readEnv = (key, fallback) => {
 
 export const configenv = {
   NODE_ENV: readEnv("NODE_ENV", "development"),
-  PORT: readEnv("PORT"),
-  FE_PORT: readEnv("FE_PORT"),
+  PORT: process.env.PORT || 3000,
+  FE_PORT: readEnv("FE_PORT", "*"),
   MONGODB_URI: readEnv("MONGODB_URI"),
   JWT_SECRET: readEnv("JWT_SECRET"),
   JWT_REFRESH_SECRET: readEnv("JWT_REFRESH_SECRET"),
